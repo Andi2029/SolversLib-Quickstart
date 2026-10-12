@@ -1,0 +1,164 @@
+package org.firstinspires.ftc.teamcode.global;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.seattlesolvers.solverslib.geometry.Pose2d;
+import com.seattlesolvers.solverslib.geometry.Vector2d;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+public class Constants {
+    public enum OpModeType {
+        AUTO,
+        TELEOP
+    }
+
+    public enum AllianceColor {
+        BLUE(1), RED(-1);
+
+        private final int multiplier;
+
+        AllianceColor(int multiplier) {
+            this.multiplier = multiplier;
+        }
+
+        public int getMultiplier() {
+            return multiplier;
+        }
+    }
+
+    public static OpModeType OP_MODE_TYPE;
+    public static AllianceColor ALLIANCE_COLOR = AllianceColor.BLUE;
+    public static double VOLTAGE_SENSOR_POLLING_RATE = 5; // Hertz
+    public static double DEFAULT_VOLTAGE = 12.67; // Volts
+    public static double MIN_VOLTAGE = 8.00; // Volts
+    public static double MAX_VOLTAGE = 15.00; // Volts
+    public static double BALL_TRANSFER_TIME = 0.15; // Seconds
+    public static boolean PROBLEMATIC_TELEMETRY = false;
+    public static boolean TESTING_OP_MODE = false;
+
+    // Drive
+    public static Pose2d END_POSE = new Pose2d();
+    public static DistanceUnit DISTANCE_UNIT = DistanceUnit.INCH;
+    public static AngleUnit ANGLE_UNIT = AngleUnit.RADIANS;
+
+    public static double TRACK_WIDTH = 11.27362; // Inches
+    public static double WHEEL_BASE = 11.50976; // Inches
+    public static double MAX_DRIVE_VELOCITY = 7.75 * 12; // Inches/second
+    public static double MAX_ANGULAR_VELOCITY = MAX_DRIVE_VELOCITY / Math.hypot(TRACK_WIDTH / 2, WHEEL_BASE / 2);
+    public static double DRIVE_VEL_PREDICT_ALPHA = 0.2; // Tune between 0 and 1
+    public static double DRIVE_POS_PREDICT_INTEGRATION_SCALAR = 0.35; // Tune between 0 and 1
+
+    public static double AUTO_STRAFING_SLEW_RATE_LIMIT = 250; // inches/second
+    public static double AUTO_TURNING_SLEW_RATE_LIMIT = 1000; // radians/second
+    public static double AUTO_MIN_POWER = 0.25; // power
+    public static double AUTO_POWER_SCALAR = 6.7; // power
+
+    public static double TELEOP_STRAFING_SLEW_RATE_LIMIT = 5.2; // Joystick/second
+    public static double TELEOP_TURNING_SLEW_RATE_LIMIT = 8.2; // Joystick/second
+    public static double JOYSTICK_DEAD_ZONE = 0.02; // Joystick
+    public static double MAX_TELEOP_HEADING_CORRECTION_VEL = 0.67; // Radians/second
+
+    public static PIDFCoefficients XY_COEFFICIENTS = new PIDFCoefficients(4.5, 0, 0.4, 0); // Coefficients for inches
+    public static PIDFCoefficients AUTO_HEADING_COEFFICIENTS = new PIDFCoefficients(8.1, 0, 0.3, 0); // Coefficients for radians
+    public static PIDFCoefficients TELEOP_HEADING_COEFFICIENTS = new PIDFCoefficients(6.7, 0, 0.25, 0); // Coefficients for radians
+    public static PIDFCoefficients AIMBOT_COEFFICIENTS = new PIDFCoefficients(3.5, 0, 0, 0); // Coefficients for radians
+    public static double XY_TOLERANCE = 0.41; // Inches
+    public static double HEADING_TOLERANCE = 0.041; // Radians
+    public static double XY_MIN_OUTPUT = 12; // Inches/second
+    public static double HEADING_MIN_OUTPUT = 2; // Radians/second
+
+    public static boolean ENABLE_ZONE_CONTROL = true;
+    public static double ZONE_TOLERANCE = 22.0;
+
+    // Intake
+    public static double INTAKE_FORWARD_SPEED = 1.0;
+    public static double INTAKE_REVERSE_SPEED = -1.0;
+    public static double INTAKE_TRANSFER_SPEED = 1.0;
+
+    public static double INTAKE_CURRENT_THRESHOLD = 2600.0; // Milliamps
+    public static double TELEOP_INTAKE_CURRENT_TIME = 125.0; // Milliseconds
+    public static double AUTO_INTAKE_CURRENT_TIME = 167.0; // Milliseconds
+    public static double INTAKE_CURRENT_BUFFER_TIME = 200.0; // Milliseconds
+    public static double INTAKE_REVERSE_ON_STOP_TIME = 0.0; // Seconds
+    public static double INTAKE_DISTANCE_THRESHOLD = 5.67; // cm
+    public static double TELEOP_INTAKE_DISTANCE_TIME = 167.0; // milliseconds
+    public static double AUTO_INTAKE_DISTANCE_TIME = 200.0; // milliseconds
+
+    // Launcher
+
+    public static double STOPPER_ENGAGED_POS = 0.36;
+    public static double STOPPER_DISENGAGED_POS = 0.72;
+
+    public static PIDFCoefficients FLYWHEEL_PIDF_COEFFICIENTS = new PIDFCoefficients(0.01, 0, 0, 0.00055); // Coefficients for ticks
+    public static double FLYWHEEL_VEL_TOLERANCE = 41; // Ticks
+    public static double LAUNCHER_DEFAULT_ON_SPEED = 0.67; // Power
+
+    public static final double GRAVITY = 9.81; // meters/second
+    public static final double LAUNCHER_HEIGHT = 0.3302; // meters // 13 inches // TODO: change
+    public static final double TARGET_HEIGHT = 1.0; // meters // TODO: change
+
+    public static double FLYWHEEL_MAX_VELOCITY = 2500; // Ticks/second
+    public static double LAUNCHER_MAX_BALL_VELOCITY = 10; // Meters/second // TODO: tune this to potentially be lower
+    public static double FLYWHEEL_ACCEL = 467; // Ticks/second^2 // TODO: tune this to potentially be non-linear
+
+    public static double MIN_HOOD_ANGLE = 20; // Degrees from horizontal
+    public static double MIN_HOOD_SERVO_POS = 0.08; // MUST MATCH WITH VALUE ABOVE
+    public static double MAX_HOOD_ANGLE = 45; // Degrees from horizontal
+    public static double MAX_HOOD_SERVO_POS = 0.78; // Position // MUST MATCH WITH VALUE ABOVE
+
+    // Turret
+    public static PIDFCoefficients TURRET_LARGE_PIDF_COEFFICIENTS = new PIDFCoefficients(0.467, 0.0, 0.028, 0.0); // Coefficients for radians
+    public static PIDFCoefficients TURRET_SMALL_PIDF_COEFFICIENTS = new PIDFCoefficients(0.467, 0.0, 0.028, 0.0); // Coefficients for radians
+    public static double TURRET_VEL_LAG = 0.067; // Seconds
+    public static double TURRET_OPEN_F = 0.029; // Power
+    public static double TURRET_POS_TOLERANCE = 0.0467; // Radians
+    public static double TURRET_VEL_TOLERANCE = Double.POSITIVE_INFINITY; // Radians/second
+    public static double TURRET_VEL_FILTER = 20; // Radians/second
+    public static double TURRET_LAST_VEL_ENTRIES = 5;
+    public static double TURRET_THRESHOLD = 0.15; // Radians
+    public static double TURRET_MIN_OUTPUT = 0.00; // Power
+    public static double TURRET_SMALL_MAX_OUTPUT = 0.067; // Power
+    public static double TURRET_LARGE_MAX_OUTPUT = 1.0; // Power
+    public static double TURRET_ENCODER_OFFSET = 3.28; // Radians
+    public static double TURRET_SERVO_OFFSET = 0.03358; // Servo Pos
+    public static double TURRET_SERVO_ROTATION = 320;
+    public static double TURRET_RADIANS_PER_TICK = (2.0 * Math.PI) / (8192 * (180.0 / 32)); // Radians // TODO: change
+
+//    public static PIDFController.IntegrationBehavior TURRET_INTEGRATION_BEHAVIOR = PIDFController.IntegrationBehavior.CLEAR_AT_SP;
+//    public static double TURRET_MIN_INTEGRAL = -0.2;
+//    public static double TURRET_MAX_INTEGRAL = 0.2;
+//    public static double TURRET_INTEGRATION_DECAY = 0.7;
+
+    public static Vector2d TURRET_PHYSICAL_OFFSET = new Vector2d(1.95977, 0); // Inches // TODO: change
+    private final double TURRET_LIMELIGHT_OFFSET = -4.124; // inches // 0.10475 m // USED ONLY FOR LIMELIGHT PIPELINE
+    public static double MAX_TURRET_ANGLE = 2.65; // Radians (only for one side of the turret)
+    public static double MIN_TURRET_ANGLE = -2.68; // Radians (only for one side of the turret)
+    public static boolean TURRET_SYNCED = false;
+    public static double TURRET_SYNC_OFFSET = 0.0;
+
+    public static float CAMERA_CLOSE_DECIMATION = 3;
+    public static float CAMERA_FAR_DECIMATION = 2;
+    public static boolean USE_CLOSE_DECIMATION = true;
+    public static double TEST_DISTANCE = 80; // Inches
+    public static double DECIMATION_THRESHOLD = 80; // Inches
+
+    public static double TARGET_OFFSET_X = 0;
+    public static double TARGET_OFFSET_Y = 0;
+
+    public static Pose2d GOAL_POSE() { // TODO: change fully from last year
+        return new Pose2d(-72 * ALLIANCE_COLOR.getMultiplier() + TARGET_OFFSET_X, 72 + TARGET_OFFSET_Y, 0); // Inches
+    }
+
+    public static double GOAL_LIP = 0.45; // Meters // TODO: change fully from last year
+    public static double BACKBOARD_Y_OFFSET = 0.1; // Meters // TODO: change fully from last year
+    public static double LIP_BUFFER = 8.5 * DistanceUnit.mPerInch; // Meters // TODO: change fully from last year
+
+    public static boolean USE_TOF_INTERPLUT = true;
+
+    public static Pose2d APRILTAG_POSE() { // TODO: change fully from last year
+        return new Pose2d(-55.630 * ALLIANCE_COLOR.getMultiplier(), 58.346, 0); // Inches
+    }
+    
+}

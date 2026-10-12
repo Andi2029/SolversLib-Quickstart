@@ -1,13 +1,24 @@
 package org.firstinspires.ftc.teamcode.global;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.seattlesolvers.solverslib.geometry.Pose2d;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 import com.seattlesolvers.solverslib.hardware.motors.MotorGroup;
 import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 import com.seattlesolvers.solverslib.hardware.servos.ServoExGroup;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.RobotLog;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 
@@ -34,6 +45,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot{
     }
 
 
+
     //drive motors
     public MotorEx RFdrive; //right front
     public MotorEx RBdrive; //right back
@@ -42,25 +54,23 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot{
 
 
     //actuator motors
-    public MotorEx inMotor; //intake motor
-    public MotorGroup outMotor; // outtake motor group, keep singular for simplicity
+    public MotorGroup inMotor; //intake motor
 
 
     //actuator servos
-    public ServoEx outClawServo;
-    public ServoEx inClawServo;
-    public ServoEx angleOutClawServo;
-    public ServoEx orientationInClawServo;
-    public ServoEx diffRightServo;
-    public ServoEx diffLeftServo;
-    public ServoEx parallelIntakeServo;
-    public ServoEx outExtensionServo;
-    public ServoExGroup outServos;
+    public ServoEx servo;
+    public ServoExGroup turretServos;
+    public ServoEx rampServo;
+
+    //Shooter
+    public boolean readyToLaunch = true;
+    public MotorGroup launchMotors;
+    public Motor.Encoder launchEncoder;
+    public ServoEx hoodServo;
 
 
     //Sensors
     public VoltageSensor voltageSensor;
-
 
 
     //Timers
@@ -68,56 +78,48 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot{
     private double cachedVoltage;
     public static double VOLTAGE_SENSOR_POLLING_RATE = 5; // Hertz
 
+    //Localizer
+    public GoBildaPinpointDriver pinpoint;
+    //public IMU imu;
+
+    //Systems
+    public Camera camera;
+
 
 
 
     public void init(HardwareMap hwMap) {
+        // Hardware
+        voltageSensor = hwMap.voltageSensor.iterator().next();
+
         RFdrive = new MotorEx(hwMap, "RF").setCachingTolerance(0.01);
         LFdrive = new MotorEx(hwMap, "LF").setCachingTolerance(0.01);
         LBdrive = new MotorEx(hwMap, "LB").setCachingTolerance(0.01);
         RBdrive = new MotorEx(hwMap, "RB").setCachingTolerance(0.01);
 
-        RBdrive.setRunMode(Motor.RunMode.RawPower);
         RFdrive.setRunMode(Motor.RunMode.RawPower);
-        LBdrive.setRunMode(Motor.RunMode.RawPower);
         LFdrive.setRunMode(Motor.RunMode.RawPower);
+        LBdrive.setRunMode(Motor.RunMode.RawPower);
+        RBdrive.setRunMode(Motor.RunMode.RawPower);
 
         RBdrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         RFdrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         LBdrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         LFdrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        outMotor = new MotorGroup(
-                new MotorEx(hwMap, "leftOut")
-                        .setCachingTolerance(0.01)
-                        .setInverted(true), //change if necessary
-                new MotorEx(hwMap, "rightOut")
-                        .setCachingTolerance(0.01)
-        );
-        outMotor.setRunMode(Motor.RunMode.PositionControl); //P controller
-        outMotor.setPositionTolerance(12); //tolerance in encoder ticks
-        outMotor.setPositionCoefficient(0.05); //Kp for the P controller
-        outMotor.setDistancePerPulse(0.015); // self-explanatory, please change
+        pinpoint = hwMap.get(GoBildaPinpointDriver.class, "pinpoint");//add
+
+
+        hoodServo = new ServoEx(hwMap, "hoodServo").setCachingTolerance(0.001)
+                .setInverted(true);
+        rampServo = new ServoEx(hwMap, "rampServo").setCachingTolerance(0.001)
+                .setInverted(false);
 
         inMotor.setRunMode(Motor.RunMode.PositionControl);
         inMotor.setPositionTolerance(12); //tolerance in encoder ticks
         inMotor.setPositionCoefficient(0.05); //Kp for the P controller
         inMotor.setDistancePerPulse(0.015); // self-explanatory, please change
 
-        outServos = new ServoExGroup(
-                new ServoEx(hwMap, "rightOutServo").setInverted(true),
-                new ServoEx(hwMap, "leftOutServo")
-        );
-
-
-        outClawServo = new ServoEx(hwMap, "outClawServo").setCachingTolerance(0.001);
-        inClawServo = new ServoEx(hwMap, "inClawServo").setCachingTolerance(0.001);
-        angleOutClawServo = new ServoEx(hwMap, "inClawServo").setCachingTolerance(0.001);
-        orientationInClawServo = new ServoEx(hwMap, "orientationInClawServo").setCachingTolerance(0.001);
-        diffRightServo = new ServoEx(hwMap, "diffRightServo").setCachingTolerance(0.001);
-        diffLeftServo = new ServoEx(hwMap, "diffLeftServo").setCachingTolerance(0.001);
-        parallelIntakeServo = new ServoEx(hwMap, "parallelIntakeServo").setCachingTolerance(0.001);
-        outExtensionServo = new ServoEx(hwMap, "outExtensionServo").setCachingTolerance(0.001);
 
         voltageSensor = hwMap.voltageSensor.iterator().next();
 
