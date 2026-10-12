@@ -160,5 +160,5 @@ public class Constants {
     public static Pose2d APRILTAG_POSE() { // TODO: change fully from last year
         return new Pose2d(-55.630 * ALLIANCE_COLOR.getMultiplier(), 58.346, 0); // Inches
     }
-    
+
 }
