@@ -15,11 +15,12 @@ import com.seattlesolvers.solverslib.hardware.servos.ServoExGroup;
 /*
 * NAMING CONVENTION
 *
-* variables start lowercase, each new word starts uppercase
+* objects & instances start lowercase, each new word starts uppercase
+* classes names start uppercase, each new word starts with uppercase
 *
 * MotorGroup objects are singular
 *
-* "intake" inside an object name is always replaced by "in"
+* "intake" inside an object name is ALWAYS replaced by "in"
 * "outtake" -> "out"
 * "differential" -> "diff"
 * */
