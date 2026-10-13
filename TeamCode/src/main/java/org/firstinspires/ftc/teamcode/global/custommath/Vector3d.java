@@ -7,6 +7,9 @@ public class Vector3d {
     private double y;
     private double z;
 
+    public static Vector3d infiniteVector = new Vector3d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+    public static Vector3d originVector = new Vector3d(0.0, 0.0, 0.0);
+
     public Vector3d (Vector2d v, double h){
         this.x=v.getX();
         this.y=v.getY();
@@ -72,5 +75,9 @@ public class Vector3d {
 
     public Vector2d toVector2d(){
         return new Vector2d(this.getX(), this.getY());
+    }
+
+    public Vector3d normalized(){
+        return this.scalarMultiplication(1/this.modulus());
     }
 }
