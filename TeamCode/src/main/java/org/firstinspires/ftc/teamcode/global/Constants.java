@@ -8,6 +8,8 @@ import com.seattlesolvers.solverslib.geometry.Vector2d;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import org.firstinspires.ftc.teamcode.global.custommath.Vector3d;
+
 public class Constants {
     public enum OpModeType {
         AUTO,
@@ -27,6 +29,9 @@ public class Constants {
             return multiplier;
         }
     }
+
+    //Natural constants
+    public static Vector3d gravitationalAcceleration = new Vector3d(0, 0, -9.81); // m/s
 
     public static OpModeType OP_MODE_TYPE;
     public static AllianceColor ALLIANCE_COLOR = AllianceColor.BLUE;
